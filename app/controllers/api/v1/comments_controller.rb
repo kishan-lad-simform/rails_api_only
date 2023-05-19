@@ -1,12 +1,12 @@
 class Api::V1::CommentsController < ApplicationController
+  before_action :find_article, only: [ :index, :create, :show ]
+  before_action :find_comment, only: [ :destroy, :update ]
   def index
-    find_article
-    @comments = @article.comments.all
+    @comments = @article.comments
     render json: @comments, status: 200
   end
 
   def create
-    find_article
     @comment = @article.comments.create(comment_param)
     if @comment.save
       render json: @comment, status: 200
@@ -16,7 +16,7 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   def update
-    find_comment
+    
     if @comment.update(comment_param)
       render json: @comment, status: 200
     else
@@ -25,13 +25,12 @@ class Api::V1::CommentsController < ApplicationController
   end
 
   def destroy
-    find_comment
+    
     @comment.destroy
     render json: @comment, status: 200
   end
 
   def show
-    find_article
     @comments = @article.comments.find(params[:id])
     render json: @comments, status: 200
   end

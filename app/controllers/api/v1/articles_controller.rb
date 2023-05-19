@@ -1,6 +1,7 @@
 class Api::V1::ArticlesController < ApplicationController
+  before_action :all_articles, only: [ :index, :search ]
+  before_action :find_article, only: [ :update, :destroy, :show ]
   def index
-    all_articles
     render json: @articles, status: 200
   end
 
@@ -35,7 +36,6 @@ class Api::V1::ArticlesController < ApplicationController
 
   def search
     if params[:title].blank?
-      all_articles
       render json: @articles, status: 200
     else
       @article = Article.where("title LIKE ?", "%#{params[:title]}%")
